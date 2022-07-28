@@ -1,11 +1,19 @@
 import { UnusualSpendingsService } from '../../src/UnusualSpendingsService';
 
 describe('UnusualSpendingsService', () => {
+    let alertSender;
+    let unusualSpendingsDetector;
+    let unusualSpendingsService;
+    const userId = '1234';
+
+    beforeEach(() => {
+        alertSender = {run: jest.fn()};
+        unusualSpendingsDetector = {run: jest.fn()};
+        unusualSpendingsService = new UnusualSpendingsService(unusualSpendingsDetector, alertSender);
+    })
+
     test('should call alert sender with the categories with unusual payment amount', () => {
-        const unusualSpendingsDetector = {run: jest.fn(() => [{category: 'food', amount: 200}, {category: 'transport', amount: 100}])};
-        const alertSender = {run: jest.fn()};
-        const unusualSpendingsService = new UnusualSpendingsService(unusualSpendingsDetector, alertSender);
-        const userId = '1234';
+        unusualSpendingsDetector.run.mockReturnValueOnce([{category: 'food', amount: 200}, {category: 'transport', amount: 100}]);
 
         unusualSpendingsService.run(userId);
 
@@ -13,10 +21,7 @@ describe('UnusualSpendingsService', () => {
     });
 
     test('should not call alert sender when there are not any unusual spending', () => {
-        const unusualSpendingsDetector = {run: jest.fn(() => [])};
-        const alertSender = {run: jest.fn()};
-        const unusualSpendingsService = new UnusualSpendingsService(unusualSpendingsDetector, alertSender);
-        const userId = '1234';
+        unusualSpendingsDetector.run.mockReturnValueOnce([]);
 
         unusualSpendingsService.run(userId);
 
