@@ -13,12 +13,13 @@ describe('UnusualSpendingsService', () => {
     })
 
     test('should call alert sender with the categories with unusual payment amount', () => {
-        unusualSpendingsDetector.run.mockReturnValueOnce([{category: 'food', amount: 200}, {category: 'transport', amount: 100}]);
+        const unusualSpendings = [unusualSpendingWith('food', 200), unusualSpendingWith('transport', 100)]
+        unusualSpendingsDetector.run.mockReturnValueOnce(unusualSpendings);
 
         unusualSpendingsService.run(userId);
 
         expect(unusualSpendingsDetector.run).toHaveBeenCalledWith(userId);
-        expect(alertSender.run).toHaveBeenCalledWith(userId, [{category: 'food', amount: 200}, {category: 'transport', amount: 100}]);
+        expect(alertSender.run).toHaveBeenCalledWith(userId, unusualSpendings);
     });
 
     test('should not call alert sender when there are not any unusual spending', () => {
@@ -30,3 +31,7 @@ describe('UnusualSpendingsService', () => {
         expect(alertSender.run).not.toHaveBeenCalled();
     });
 });
+
+function unusualSpendingWith(category , amount) {
+    return { category, amount };
+}
