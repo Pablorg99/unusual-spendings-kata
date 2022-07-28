@@ -17,6 +17,7 @@ describe('UnusualSpendingsService', () => {
 
         unusualSpendingsService.run(userId);
 
+        expect(unusualSpendingsDetector.run).toHaveBeenCalledWith(userId);
         expect(alertSender.run).toHaveBeenCalledWith(userId, [{category: 'food', amount: 200}, {category: 'transport', amount: 100}]);
     });
 
@@ -25,6 +26,7 @@ describe('UnusualSpendingsService', () => {
 
         unusualSpendingsService.run(userId);
 
+        expect(unusualSpendingsDetector.run).toHaveBeenCalledWith(userId);
         expect(alertSender.run).not.toHaveBeenCalled();
     });
 });
